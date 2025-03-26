@@ -24,6 +24,6 @@ void func(int x, int y, int size){
 }
 int main(){
     cin >> n >> r >> c;
-    func(0, 0, pow(2, n));
+    func(0, 0, (1 << n));
     return 0;
 }
