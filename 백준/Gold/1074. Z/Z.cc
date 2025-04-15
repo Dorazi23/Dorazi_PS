@@ -10,7 +10,8 @@ int n, r, c;
 int ans = 0;
 
 void func(int x, int y, int size){
-    if(c==x && r==y){         cout << ans;
+    if(c==x && r==y){         
+        cout << ans;
         return;
     }
     else if (c < x + size && r < y + size && c >= x && r >= y){
@@ -18,7 +19,7 @@ void func(int x, int y, int size){
         func(x + size / 2, y, size / 2);
         func(x, y + size / 2, size / 2);
         func(x + size / 2, y + size / 2, size / 2);
-    }else{ // 없다면 숫자 카운트 -> 정사각형 넓이
+    }else{ 
         ans += size * size;
     }
 }
