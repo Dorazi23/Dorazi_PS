@@ -7,24 +7,19 @@ int dp[3][30][30] = {0, };
 int ans[30][30] = {0, };
 int n;
 
-bool OutOfBounds(int x, int y){
-    return x < 0 || x >= n || y < 0 || y >= n;
-}
+
 
 bool Diagonal_Possible(int x, int y){ //해당 좌표를 끝으로 하는 대각선이 가능한지 확인
-    if (OutOfBounds(x,y) || OutOfBounds(x-1,y) || OutOfBounds(x,y-1) || OutOfBounds(x-1,y-1)) return false;
     if (board[x][y] == 1 || board[x-1][y] == 1 || board[x][y-1] == 1 || board[x-1][y-1] == 1) return false;
     return true;
 }
 
 bool Row_Possible(int x, int y){ 
-    if(OutOfBounds(x,y) || OutOfBounds(x,y-1)) return false;
     if(board[x][y] == 1 || board[x][y-1] == 1) return false;
     return true;
 }
 
 bool Col_Possible(int x, int y){
-    if(OutOfBounds(x,y) || OutOfBounds(x-1,y)) return false;
     if(board[x][y] == 1 || board[x-1][y] == 1) return false;
     return true;
 }
