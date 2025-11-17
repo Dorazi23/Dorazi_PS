@@ -29,7 +29,6 @@ void input () {
 }
 
 void output () {
-
     for (int i = 0; i < n; i++) {
         int st = card[i].X * 2;
         while (st <= mx) {
@@ -40,9 +39,7 @@ void output () {
             st += card[i].X;
         }
     }
-
-    sort(card.begin(), card.end(), cmp);
-
+    
     for (auto cur : card) {
         cout << score[cur.X] << " ";
     }
