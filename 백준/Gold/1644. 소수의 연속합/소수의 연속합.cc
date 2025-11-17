@@ -29,16 +29,14 @@ void Prime() {
 
 }
 
-
-
 void ans() {
     int answer = 0;
-    for (int i = 0; i < vPrime.size(); i++) {
-        if (n < vPrime[i]) break;
-        int tmp = i;
+    for (int st = 0; st < vPrime.size(); st++) {
+        if (n < vPrime[st]) break;
+        int en = st;
         int sum = 0;
-        while (sum < n && tmp < vPrime.size()) {
-            sum += vPrime[tmp++];
+        while (sum < n && en < vPrime.size()) {
+            sum += vPrime[en++];
             if (sum == n) answer++;
         }
     }
