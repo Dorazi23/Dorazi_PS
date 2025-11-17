@@ -29,7 +29,7 @@ void input () {
 }
 
 void output () {
-    sort(card.begin(), card.end());
+
     for (int i = 0; i < n; i++) {
         int st = card[i].X * 2;
         while (st <= mx) {
