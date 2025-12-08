@@ -21,17 +21,18 @@ void input() {
 int cnt;
 void ans() {
     sort(arr, arr+n);
-
-    
-    for (int st = 0; st < n; st++) {
-        int en = n-1;
+    int st = 0, en = n-1;
+    while (st < en) {
         int tot = arr[st] + arr[en];
-        while(tot >= m && st < en) {
-            
-            tot = arr[st] + arr[en];
-            if (tot == m){ 
-                cnt++;
-            }
+        if (tot == m) {
+            cnt++;
+            st++; 
+            en--;
+        }
+        else if (tot < m) {
+            st++;
+        }
+        else { // tot > m
             en--;
         }
     }
