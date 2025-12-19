@@ -7,13 +7,12 @@
 #define fastio cin.tie(0)->sync_with_stdio(0)
 using namespace std;
 using ll = long long;
-int n, tar, tar_score;
-vector<pair<int,int>> v;
+int n, tar;
 
-bool cmp (pair<int,int> a, pair<int,int> b) {
-    if (a.Y > b.Y) return a > b;
-    else return a < b;
-}
+vector<tuple<int,int,int>> v;
+tuple<int,int,int> target;
+
+
 
 void input() {
     fastio;
@@ -21,20 +20,17 @@ void input() {
     for (int i = 1; i <= n; i++) {
         int order; cin >> order;
         int a, b, c; cin >> a >> b >> c;
-        
-        int tot = 3*a + 2*b + c;
-        if (order == tar) tar_score = tot; // 타겟과 순서가 동일하면, 그 점수를 저장
-        v.push_back({order, tot});
-        
+        v.push_back({a,b,c});
+        if (order == tar) target = {a,b,c};
     }
 
-    sort(v.begin(), v.end(), cmp);
+    sort(v.begin(), v.end(), greater<>());
 
     int answer = 1;
-    for (int i = 0; i < n; i++) {
-        auto cmp = v[i];
-        if (cmp.Y > tar_score) answer++;
-        if (cmp.Y == tar_score) {
+    for (auto val : v) {
+        auto [a,b,c] = val;
+        if (val != target) answer++;
+        else {
             cout << answer << endl;
             return;
         }
