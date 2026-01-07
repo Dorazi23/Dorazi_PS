@@ -9,54 +9,41 @@ using namespace std;
 using ll = long long;
 string w;
 int t, k, mx, mn;
-int alphabet[100];
 
 void input () {
-    fastio; cin >> t;
-    while (t--) {
-        // 반복되는 요소 초기화 
-        bool flag = false;
-        memset(alphabet, 0, sizeof(alphabet));
-        mx = -1000, mn = MAX;
-        
-        cin >> w >> k; 
-        
-        for (int i = 0; i < w.size(); i++) { // 알파벳 개수 파악 
-            alphabet[w[i] - 'a']++;
-        }
+    vector<int> idx[26];
     
-        for (int i = 0; i < w.size(); i++) {
-           
-            if (alphabet[w[i] - 'a'] < k) continue; // 문자가 1개 이하인 경우엔 스킵 
-    
-            char tar = w[i]; 
-            int len = 1, cnt = 1; // len: 문자열의 길이, cnt: tar이 나온 횟수 
-            
-            
-            for (int j = i + 1; j < w.size(); j++) {
-                flag = true; // 한 번이라도 루프를 돌면 가능한 경우가 존재함 
-                if (cnt < k) { // k번보다 적게 나왔다면 
-                    if (tar == w[j]) {
-                        cnt++;
-                        len++;
-                    }
-                    else len++;
-                }
-            }
-            if (cnt == k) {
-                mx = max (mx, len);
-                mn = min (mn, len);    
-            }
-        }
-    
-        if (!flag) { // 한 번도 루프가 돌지 않음 
-            if (w.size() == 1) cout << "1 1" << endl;
-            else cout << "-1" << endl; 
-        }  
-        else cout << mn << " " << mx << endl;
+    cin >> w >> k;
+
+    for (int i = 0; i < w.size(); i++) {
+        idx[w[i] - 'a'].push_back(i);
     }
+    // aaaba 
+    // idx[i] = {0, 1, 2, 4}
+    // k = 4
+    // j ~ j+k-1
+    // j+k-1 == size - 1
+
+    int mx = -1000, mn = INT_MAX;
+    for (int i = 0; i < 26; i++) {
+        if (idx[i].size() < k) continue;
+
+        for (int j = 0; j <= idx[i].size() - k; j++) {
+            int st = idx[i][j], en = idx[i][j+k-1];
+            int len = en-st + 1;
+
+            mx = max(mx, len);
+            mn = min(mn, len);
+        }
+    }
+
+    if (mx == -1000) cout << "-1" << endl;
+    else cout << mn << " " << mx << endl;
 }
 
 int main() {
-    input();
+    fastio; cin >> t;
+    while (t--) {
+        input();
+    }
 }
