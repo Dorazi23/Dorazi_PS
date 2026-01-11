@@ -2,40 +2,45 @@
 #define endl '\n'
 #define X first
 #define Y second
-#define MAX 100005
+#define MAX 1000000007
+#define INF 0x3f3f3f3f
 #define fastio cin.tie(0)->sync_with_stdio(0)
 using namespace std;
+using ull = unsigned long long;
 int n, r, q;
-vector<int> adj[MAX];
-int p[MAX];
-int sz[MAX];
+vector<int> adj[100005];
+vector<int> p(100005, -1);
+vector<int> dp(100005, 1);
 
-void dfs(int cur){
-    sz[cur] = 1;
+void func (int cur) {
+    dp[cur] = 1;
     for (auto nxt : adj[cur]) {
-        if(p[cur] == nxt) continue;
+        if (nxt == p[cur]) continue;
         p[nxt] = cur;
-        dfs(nxt);
-        sz[cur] += sz[nxt];
+        func(nxt);
+        dp[cur] += dp[nxt];
     }
 }
 
-int main() {
-    fastio;
-    memset(p, -1, sizeof(p));
-    memset(sz, 0, sizeof(sz));
-    cin >> n >> r >> q;
+void input () {
+    cin >> n >> r >> q;    
     for (int i = 0; i < n-1; i++) {
         int u, v; cin >> u >> v;
         adj[u].push_back(v);
         adj[v].push_back(u);
-        if(u == r){
-            p[v] = u;
-        }
+        if (u == r) p[v] = u;
     }
-    dfs(r); //부모 채우기
-    while(q--){
-        int qr; cin >> qr;
-        cout << sz[qr] << endl;
+    
+    func(r);
+
+    while (q--) {
+        int num; cin >> num;
+        cout << dp[num] << endl;
     }
+    
+} 
+
+int main() {
+    fastio; 
+    input();
 }
