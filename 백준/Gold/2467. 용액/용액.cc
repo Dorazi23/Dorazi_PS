@@ -1,43 +1,48 @@
 #include <bits/stdc++.h>
 #define endl '\n'
+#define X first
+#define Y second
+#define MAX 1000000007
+#define INF 0x3f3f3f3f
 #define fastio cin.tie(0)->sync_with_stdio(0)
-using ll = long long;
 using namespace std;
-int n;
-ll arr[100005]; 
-ll standard = LLONG_MAX;
-ll ans1, ans2;
-int main(){
-    fastio;
+using ull = unsigned long long;
+int n, mn = INT_MAX, i, j;
+vector<int> arr;
+
+void input () {
     cin >> n;
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
+    while (n--) {
+        int num; cin >> num;
+        arr.push_back(num);
     }
-    for (int i = 0; i < n; i++) {
-        ll tar1 = arr[i];
-        ll st = 0, en = n;
-        while(st + 1 < en){
-            ll md = (st + en) / 2;
-            ll tar2 = arr[md];
-            ll sum = tar1 + tar2;
-            if(tar1 != tar2 && abs(sum) < standard){
-                standard = abs(sum);
-                if(tar2 > tar1){
-                    ans1 = tar1;
-                    ans2 = tar2;
-                }
-                else{
-                    ans1 = tar2;
-                    ans2 = tar1;
-                }
-            }
-            if(sum > 0){
-                en = md;
-            }
-            else{
-                st = md;
-            }
+
+    sort (arr.begin(), arr.end());
+    int st = 0, en = arr.size() - 1;
+    while (st < en) {
+        int tar = arr[st] + arr[en];
+
+        if (abs(tar) < mn) {
+            mn = abs(tar);
+            i = st, j = en;
+        }
+        
+        if (tar == 0) {
+            cout << arr[st] << " " << arr[en] << endl;
+            return;
+        }
+        if (tar > 0) { // en--
+            en--;
+        }
+        if (tar < 0) { // st++
+            st++;
         }
     }
-    cout << ans1 << " " << ans2 << endl;
+
+    cout << arr[i] << " " << arr[j] << endl;
+} 
+
+int main() {
+    fastio; 
+    input();
 }
