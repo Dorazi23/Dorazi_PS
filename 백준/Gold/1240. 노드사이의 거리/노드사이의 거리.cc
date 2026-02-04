@@ -3,29 +3,59 @@
 #define X first
 #define Y second
 #define fastio cin.tie(0)->sync_with_stdio(0)
+#define INF 4e18
 using namespace std;
-int n, m;
-vector<pair<int,int>> adj[1005];
-bool vis[1005];
+const int sz = 1e5+10;
+using ll = long long;
+vector<pair<int,int>> adj[sz];
+int n, m, depth[sz], vis[sz], dp[sz][35];
+ll dist[sz]; 
 
-void bfs (int st, int en) {
-    memset(vis, 0, sizeof(vis));
-    queue<pair<int,int>> q;
-    q.push({st, 0});
-    vis[st] = 1;
-    while (!q.empty()) {
-        auto cur = q.front(); q.pop();
-        if (cur.X == en) {
-            cout << cur.Y << endl;
-            return;
+void dfs (int cur, int d) {
+    vis[cur] = 1;
+    depth[cur] = d;
+
+    for (auto nxt : adj[cur]) {
+        if (vis[nxt.X]) continue;
+        if (dist[nxt.X] > dist[cur] + nxt.Y) {
+            dist[nxt.X] = dist[cur] + nxt.Y;
         }
-        
-        for (auto nxt : adj[cur.X]) {
-            if (vis[nxt.X]) continue;
-            vis[nxt.X] = 1;
-            q.push({nxt.X, cur.Y + nxt.Y});
+        dp[nxt.X][0] = cur;
+        dfs (nxt.X, d+1);
+    }
+}
+
+void make_table () {
+    for (int j = 1; j < 30; j++) {
+        for (int i = 1; i <= n; i++) {
+            dp[i][j] = dp[dp[i][j-1]][j-1];
         }
     }
+}
+
+int LCA (int u, int v) {
+    if (depth[u] < depth[v]) swap(u, v);
+    int diff = depth[u] - depth[v];
+    for (int i = 0; diff; i++) { // diff 차이만큼 노드 u를 올림 
+        if (diff & 1) u = dp[u][i]; // 2^i 칸 만큼 점프
+        diff >>= 1;
+    }
+
+    // 한 노드가 다른 노드의 조상인 경우
+    if (u == v) return u;
+
+    // LCA 직전까지 두 노드를 끌어 올림
+    for (int i = 29; i >= 0; i--) {
+        // LCA 보다 더 깊은 경우 공통 조상이 존재하지 않음 
+        // 따라서, 2^i번 째 조상이 서로 다르고 그 만큼 점프한다는 건 LCA에 가까워짐을 의미 
+        if (dp[u][i] != dp[v][i]) {
+            u = dp[u][i];
+            v = dp[v][i];
+        }
+    }
+
+    // LCA 직전까지 두 노드가 이동했으므로, 아무거나 한 칸 위로 올리면 LCA
+    return dp[u][0];
 }
 
 void input () {
@@ -35,10 +65,15 @@ void input () {
         adj[u].push_back({v, d});
         adj[v].push_back({u, d});
     }
-    
-    while(m--) {
-        int st, en; cin >> st >> en;
-        bfs (st, en);
+
+    fill (dist, dist+n+1, INF);
+    dist[1] = 0;
+    dfs (1, 0);
+    make_table();
+
+    while (m--) {
+        int u, v; cin >> u >> v;
+        cout << dist[u] + dist[v] - 2*dist[LCA(u, v)] << endl;
     }
 }
 
