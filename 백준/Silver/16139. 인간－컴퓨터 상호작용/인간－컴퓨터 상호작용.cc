@@ -21,11 +21,11 @@ void input () {
     while (q--) {
         char ch; int l, r, cnt = 0;
         cin >> ch >> l >> r;
-
-        for (auto x : dp[ch-'a']) if (l <= x && x <= r) cnt++;
-        cout << cnt << endl;
+        
+        auto left = lower_bound(dp[ch-'a'].begin(), dp[ch-'a'].end(), l);
+        auto right = upper_bound(dp[ch-'a'].begin(), dp[ch-'a'].end(), r);
+        cout << right-left << endl;
     }
-    
 }
 
 int main() {
