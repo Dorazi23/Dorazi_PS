@@ -7,9 +7,8 @@
 #define INF 4e18
 using namespace std;
 using ll = long long;
-bool chk[1000005];
-vector<int> res, ans;
-int t;
+vector<int> res;
+int t, dp[1000005];
 
 bool check (vector<int>& v) {    
     int tar = -1;
@@ -37,40 +36,32 @@ bool check (vector<int>& v) {
     }
 }
 
-void func (vector<int>& res, int start, int cnt, int need) {
+void func (vector<int>& res, int cnt, int need) {
     if (cnt == need) {
-        string s = "";
-        for (auto x : res) s += (x+'0');
-        int num = stoi(s);
-        if (check(res)) ans.push_back(num);
+        int num = 0;
+        for (auto x : res) num = (num * 10 + x);
+
+        if (check(res)) dp[num] = 1;
         return;
     }
     
     for (int i = 0; i < 10; i++) {
         if (cnt == 0 && i == 0) continue;
         res.push_back(i);
-        func (res, i, cnt+1, need);
+        func (res, cnt+1, need);
         res.pop_back();
     }
 }
 
-void func2 () {
-    func(res, 0, 0, 3);
-    func(res, 0, 0, 4);
-    func(res, 0, 0, 5);
-    func(res, 0, 0, 6);
-}
-
 void input () {
-    int a, b, cnt = 0; cin >> a >> b;
-    auto left = lower_bound (ans.begin(), ans.end(), a);
-    auto right = upper_bound (ans.begin(), ans.end(), b);
-    cout << right - left << endl;
+    int a, b; cin >> a >> b;
+    cout << dp[b] - dp[a-1] << endl;
 }
 
 int main() {
     fastio;
-    func2();
+    for (int i = 3; i <= 6; i++) func(res, 0, i);
+    for (int i = 1; i <= 1000000; i++) dp[i] += dp[i-1];
     cin >> t;
     while (t--) {
         input();
