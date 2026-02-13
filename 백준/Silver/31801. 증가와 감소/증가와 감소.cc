@@ -41,7 +41,8 @@ void func (vector<int>& res, int cnt, int need) {
         int num = 0;
         for (auto x : res) num = (num * 10 + x);
 
-        if (check(res)) dp[num] = 1;
+        dp[num] = dp[num-1];
+        if (check(res)) dp[num]++;
         return;
     }
     
@@ -61,7 +62,7 @@ void input () {
 int main() {
     fastio;
     for (int i = 3; i <= 6; i++) func(res, 0, i);
-    for (int i = 1; i <= 1000000; i++) dp[i] += dp[i-1];
+    dp[1000000] = dp[999999]; // 누적합 이어주기
     cin >> t;
     while (t--) {
         input();
