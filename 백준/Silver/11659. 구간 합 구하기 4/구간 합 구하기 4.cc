@@ -1,22 +1,28 @@
 #include <bits/stdc++.h>
+#define endl '\n'
+#define X first
+#define Y second
+#define fastio cin.tie(0)->sync_with_stdio(0)
+#define MAX 1000000000
+#define INF 4e18
 using namespace std;
+using ll = long long;
+int n, m, arr[100005], dp[100005];
 
-int n, m;
-long long d[100005];
-int num[100005];
+void input () {
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++) cin >> arr[i];
+    for (int i = 1; i <= n; i++) {
+        dp[i] = dp[i-1] + arr[i];
+    }
+    while (m --) {
+        int u, v; cin >> u >> v;
+        if (u == 1) cout << dp[v] << endl;
+        else cout << dp[v] - dp[u-1] << endl;
+    }
+}
 
 int main() {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    cin >> n >> m;
-    d[0] = 0;
-    for (int i = 1; i <= n; i++) {
-        cin >> num[i];
-        d[i] = d[i-1] + num[i];
-    }
-    while(m--){
-        int i, j;
-        cin >> i >> j;
-        cout << d[j] - d[i-1] << '\n';
-    }
+    fastio;
+    input();
 }
