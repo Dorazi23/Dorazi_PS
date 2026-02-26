@@ -6,14 +6,11 @@
 #define INF 4e17
 using namespace std;
 using ll = long long;
-int target[105], edge[2005][2005];
+int target[105];
 vector<pair<ll,int>> adj[2005];
-ll A[2005], B[2005], C[2005];
-// A는 g에서 모든 노드까지 최단 거리
-// B는 h에서 모든 노드까지 최단 거리 
-// C는 시작지점에서 모든 노드까지 최단 거리
+ll dist[2005];
 
-void dijkstra (int st, ll dist[]) {
+void dijkstra (int st) {
     priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> pq;
     dist[st] = 0;
     pq.push({0, st});
@@ -29,31 +26,30 @@ void dijkstra (int st, ll dist[]) {
 }
 
 void input () {
-    fill(target, target+105, 0); fill(A, A+2005, INF); fill(B, B+2005, INF); fill(C, C+2005, INF);
-    for (int i = 0; i < 2005; i++) fill(edge[i], edge[i]+2005, 1e9);
+    fill(target, target+105, 0); fill(dist, dist+2005, INF);
     for (int i = 0; i < 2005; i++) adj[i].clear();
     
     int n, m, t; cin >> n >> m >> t;
     int s, g, h; cin >> s >> g >> h;
     while (m--) {
         int u, v, d; cin >> u >> v >> d;
-        adj[u].push_back({d, v});
-        adj[v].push_back({d, u});
-        edge[u][v] = min(edge[u][v], d);
-        edge[v][u] = edge[u][v];
+        if (u == g && v == h || u == h && v == g) { // 특정 간선이면 홀수
+            adj[u].push_back({2*d-1, v});
+            adj[v].push_back({2*d-1, u});
+            continue;
+        }
+        // 특정 간선이 아니면 짝수
+        adj[u].push_back({2*d, v});
+        adj[v].push_back({2*d, u});
     }
     for (int i = 0; i < t; i++) cin >> target[i];
 
-    dijkstra(g, A);
-    dijkstra(h, B);
-    dijkstra(s, C);
-
+    dijkstra(s);
     vector<int> res;
     for (int i = 0; i < t; i++) {
+        // 시작점부터 목적지까지 최단 거리가 홀수면 특정 간선을 지난 것
         int tar = target[i];
-        ll d = min(A[s] + edge[g][h] + B[tar], A[tar] + edge[g][h] + B[s]);
-        if (d > C[tar]) continue;
-        res.push_back(target[i]);
+        if (dist[tar] & 1) res.push_back(tar);
     }
 
     sort(res.begin(), res.end());
