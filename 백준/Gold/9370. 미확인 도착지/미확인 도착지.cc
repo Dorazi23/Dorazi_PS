@@ -2,68 +2,69 @@
 #define endl '\n'
 #define X first
 #define Y second
-#define MAX 1000000007
-#define INF 4e18
 #define fastio cin.tie(0)->sync_with_stdio(0)
+#define INF 4e17
 using namespace std;
 using ll = long long;
-int s, g, h; 
-vector<pair<ll, int>> adj[2005];
+int target[105], edge[2005][2005];
+vector<pair<ll,int>> adj[2005];
+ll A[2005], B[2005], C[2005];
+// A는 g에서 모든 노드까지 최단 거리
+// B는 h에서 모든 노드까지 최단 거리 
+// C는 시작지점에서 모든 노드까지 최단 거리
 
-void dijkstra (int st, int en, ll dist[2005]) {
-    priority_queue< pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>> > pq;
+void dijkstra (int st, ll dist[]) {
+    priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> pq;
     dist[st] = 0;
-    pq.push({dist[st], st}); // 거리, 노드 
+    pq.push({0, st});
     while (!pq.empty()) {
-        auto cur = pq.top(); pq.pop(); // X: 거리, Y: 노드
-        if (cur.X != dist[cur.Y]) continue;
-        
-        for (auto nxt : adj[cur.Y]) {
-            if (dist[nxt.Y] > dist[cur.Y] + nxt.X) {
-                dist[nxt.Y] = dist[cur.Y] + nxt.X;
-                pq.push({dist[nxt.Y], nxt.Y});
-            }
+        auto [D, cur] = pq.top(); pq.pop();
+        if (dist[cur] != D) continue;
+        for (auto [d, nxt] : adj[cur]) { // {거리, 노드}
+            if (dist[nxt] <= dist[cur] + d) continue;
+            dist[nxt] = dist[cur] + d;
+            pq.push({dist[nxt], nxt});
         }
     }
 }
 
 void input () {
-    ll edge = INF; // g-h 간선만 저장할 용
-    int n, m, t; cin >> n >> m >> t; // 교차로 도로 목적지 
-    cin >> s >> g >> h; // 시작지점 냄새맡은 구간 [g][h] (g != h)
-    for (int i = 0; i <= n+1; i++) adj[i].clear();
-    vector<int> target;
+    fill(target, target+105, 0); fill(A, A+2005, INF); fill(B, B+2005, INF); fill(C, C+2005, INF);
+    for (int i = 0; i < 2005; i++) fill(edge[i], edge[i]+2005, 1e9);
+    for (int i = 0; i < 2005; i++) adj[i].clear();
     
+    int n, m, t; cin >> n >> m >> t;
+    int s, g, h; cin >> s >> g >> h;
     while (m--) {
-        int a, b; ll d; cin >> a >> b >> d;
-        adj[a].push_back({d, b});
-        adj[b].push_back({d, a});
-        if ((a == g && b == h) || (a == h && b == g)) {
-            edge = min(edge, d);
-        }
+        int u, v, d; cin >> u >> v >> d;
+        adj[u].push_back({d, v});
+        adj[v].push_back({d, u});
+        edge[u][v] = min(edge[u][v], d);
+        edge[v][u] = edge[u][v];
+    }
+    for (int i = 0; i < t; i++) cin >> target[i];
+
+    dijkstra(g, A);
+    dijkstra(h, B);
+    dijkstra(s, C);
+
+    vector<int> res;
+    for (int i = 0; i < t; i++) {
+        int tar = target[i];
+        ll d = min(A[s] + edge[g][h] + B[tar], A[tar] + edge[g][h] + B[s]);
+        if (d > C[tar]) continue;
+        res.push_back(target[i]);
     }
 
-    while (t--) {
-        int num; cin >> num; 
-        target.push_back(num);
-    }
-    sort(target.begin(), target.end());
-
-    ll S[2005], G[2005], H[2005];
-    for (auto en : target) {
-        fill (S, S+n+1, INF); fill (G, G+n+1, INF); fill (H, H+n+1, INF);
-        dijkstra(s, en, S);
-        dijkstra(g, en, G);
-        dijkstra(h, en, H);
-        if ((S[en] == S[g] + edge + H[en]) || (S[en] == S[h] + edge + G[en])) cout << en << " ";
-    }
+    sort(res.begin(), res.end());
+    for (auto x : res) cout << x << " ";
     cout << endl;
 }
 
 int main() {
     fastio;
-    int T; cin >> T;
-    while (T--) {
+    int t; cin >> t;
+    while (t--) {
         input();
     }
 }
