@@ -1,27 +1,23 @@
 #include <bits/stdc++.h>
 #define fastio cin.tie(0)->sync_with_stdio(0)
 #define endl '\n'
+#define X first
+#define Y second
 using namespace std;
-int n;
-vector<int> V;
-set<int> s;
+int n, arr[1000005];
+map<int,int> m;
 
 void input () {
     cin >> n;
-    for (int i = 0; i < n; i++) {
-        int m; cin >> m;
-        s.insert(m);
-        V.push_back(m);
-    }
+    for (int i = 0; i < n; i++) cin >> arr[i];
+    for (int i = 0; i < n; i++) m.emplace(arr[i], 0);
 
-    vector<int> v;
-    for (auto x : s) v.push_back(x);
-    for (int i = 0; i < n; i++) {
-        int tar = V[i];
-        int res = lower_bound(v.begin(), v.end(), tar) - v.begin();
-        cout << res << " ";
+    int cnt = 0;
+    for (auto& [num, idx] : m) idx = cnt++;
+
+    for (int i = 0; i <n; i++) {
+        cout << m.find(arr[i])->Y << " ";
     }
-    
 }
 
 int main() {
